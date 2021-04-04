@@ -61,14 +61,55 @@ namespace base32h_cs
 
             return output;
         }
+        //EncodeBin
+
+        public int decodeDigit(Char input)
+        {
+            int index = -1;
+            for (int i = 0; i < digits.Length; i++)
+            {
+                if (digits[i].Contains(input))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
+        }
+
+        public long decode(String input) 
+        {
+            Char[] rem = input.ToCharArray();
+            int temp = rem.Length, i = rem.Length;
+            long answer = 0, exp = 0;
+
+            while (temp > 0)
+            {
+                long digit = decodeDigit(rem[i-1]);
+                i -= 1;
+                temp -= 1;
+
+                if (digit < 0)
+                {
+                    continue;
+                }
+
+                answer += digit * (long)Math.Pow(32, exp);
+                exp++;
+            }
+
+            return answer;
+        }
 
 
-        static void Main(string[] args)
+        static void Main(string[] args) 
         {
             base32h myBase = new base32h();
-            //System.Console.WriteLine("Hello World");
-            var x = myBase.encode(17854910);
-            myBase.printArrayList(x);
+            var y = myBase.decode("howdy");
+            System.Console.WriteLine(y);
+            //var x = myBase.encode(17854910);
+            //myBase.printArrayList(x);
 
         }
 
