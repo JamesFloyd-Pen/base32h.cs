@@ -44,7 +44,6 @@ namespace base32h_cs
 
             ArrayList output = new ArrayList();
 
-
             if (input == 0)
             {
                 output.Add("0");
@@ -62,6 +61,50 @@ namespace base32h_cs
             return output;
         }
         //EncodeBin
+        public ArrayList encodeBin(int[] input)
+        {
+            ArrayList output;
+
+            var overflow = input.Length % 5;
+            if (overflow != 0)
+            {
+                //input = Array.ConstrainedCopy(input, input.Length + 5-overflow);
+                input.CopyTo(input, input.Length + 5 - overflow);
+                input = moveZeroesToLeft(input);
+
+            }
+            for(int i = 0; i < input.Length; i+=5)
+            {
+                var segment = new ArraySegment<int>(input,i,i+5);
+                //var segInt = bytesToUint40(segment);
+                //output.add(encode(segInt);
+                //pad(output);
+            }
+
+            return output;
+        }
+
+        private long bytesToUint40(int[] input)
+        {
+
+            return input[0] * (long)Math.Pow(2, 32) + input[1] * (long)Math.Pow(2, 24) + input[2] * (long)Math.Pow(2, 16) + input[3] * (long)Math.Pow(2, 8) + input[4];
+        }
+
+        private int[] moveZeroesToLeft(int[] n)
+        {
+
+            int count = 0;
+            for (int i = 0; i < n.Length; i++)
+            {
+                if (n[i] == 0)
+                {
+                    n[i] = n[count];
+                    n[count++] = 0;
+                }
+            }
+
+            return n;
+        }
 
         public int decodeDigit(Char input)
         {
@@ -101,7 +144,6 @@ namespace base32h_cs
 
             return answer;
         }
-
 
         static void Main(string[] args) 
         {
