@@ -63,22 +63,25 @@ namespace base32h_cs
         //EncodeBin
         public ArrayList encodeBin(int[] input)
         {
-            ArrayList output;
+            ArrayList output = new ArrayList(); ;
 
             var overflow = input.Length % 5;
             if (overflow != 0)
             {
                 //input = Array.ConstrainedCopy(input, input.Length + 5-overflow);
-                input.CopyTo(input, input.Length + 5 - overflow);
+                //input.CopyTo(input, input.Length + 5 - overflow);
                 input = moveZeroesToLeft(input);
 
             }
             for(int i = 0; i < input.Length; i+=5)
             {
-                var segment = new ArraySegment<int>(input,i,i+5);
-                //var segInt = bytesToUint40(segment);
-                //output.add(encode(segInt);
-                //pad(output);
+                int[] segment = new int[5];
+                Array.Copy(input, 0, segment, 0, 4);
+                long segInt = bytesToUint40(segment);
+                output.AddRange(encode(segInt));
+                pad(output);
+                printArrayList(output);
+
             }
 
             return output;
@@ -88,6 +91,22 @@ namespace base32h_cs
         {
 
             return input[0] * (long)Math.Pow(2, 32) + input[1] * (long)Math.Pow(2, 24) + input[2] * (long)Math.Pow(2, 16) + input[3] * (long)Math.Pow(2, 8) + input[4];
+        }
+
+        private ArrayList pad(ArrayList input)
+        {
+
+            int o = input.Count % 8;
+            if (o != 0)
+            {
+                for (int i = 0; i < 8 - o; i++)
+                {
+                    input.Insert(i, "0");
+                }
+                return input;
+            }
+
+            return input;
         }
 
         private int[] moveZeroesToLeft(int[] n)
@@ -148,8 +167,11 @@ namespace base32h_cs
         static void Main(string[] args) 
         {
             base32h myBase = new base32h();
-            var y = myBase.decode("howdy");
-            System.Console.WriteLine(y);
+            int[] test = { 255, 255, 255, 255, 255};
+            myBase.encodeBin(test);
+            
+            //var y = myBase.decode("howdy");
+            //System.Console.WriteLine(y);
             //var x = myBase.encode(17854910);
             //myBase.printArrayList(x);
 
