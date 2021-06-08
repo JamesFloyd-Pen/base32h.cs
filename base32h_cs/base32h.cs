@@ -5,6 +5,7 @@ namespace base32h_cs
 {
     class base32h
     {
+
         public string[] digits = {
             "0Oo",
             "1Ii",
@@ -60,10 +61,11 @@ namespace base32h_cs
 
             return output;
         }
+
         //EncodeBin
         public ArrayList encodeBin(int[] input)
         {
-            ArrayList output = new ArrayList(); ;
+            ArrayList output = new ArrayList();
 
             var overflow = input.Length % 5;
             if (overflow != 0)
@@ -164,12 +166,51 @@ namespace base32h_cs
             return answer;
         }
 
+        public ArrayList decodeBin(String input)
+        {
+            ArrayList output = new ArrayList();
+            ArrayList padded = new ArrayList();
+            padded.AddRange(input.ToCharArray());
+            var n = padded.Count;
+
+            for(int i = 0; i < n; i +=8)
+            {
+                String segment ="";
+                long val = decode(segment);
+                output.AddRange(uint40ToBytes(val));
+            }
+
+            return output;
+        }
+
+        private int[] uint40ToBytes(long input)
+        {
+            int[] bytes = { 0, 0, 0, 0, 0 };
+            for (int idx = bytes.Length - 1; idx >= 0; idx--)
+            {
+                float myByte = input & 0xff;
+                bytes[idx] = (int)myByte;
+                input = (input - (long)myByte) / 256;
+                if (input == 0)
+                {
+                    break;
+                }
+            }
+            return bytes;
+        }
+
+
         static void Main(string[] args) 
         {
             base32h myBase = new base32h();
-            int[] test = { 255, 255, 255, 255, 255};
-            myBase.encodeBin(test);
-            
+
+            ArrayList padd = new ArrayList();
+            //String test = "Corrin";
+            //padd.AddRange(test.ToCharArray());
+           // myBase.printArrayList(padd);
+            //int[] test = { 255, 255, 255, 255, 255};
+            // myBase.encodeBin(test);
+            //System.Console.WriteLine();
             //var y = myBase.decode("howdy");
             //System.Console.WriteLine(y);
             //var x = myBase.encode(17854910);
